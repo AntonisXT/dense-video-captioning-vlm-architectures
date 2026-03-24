@@ -1,0 +1,52 @@
+# Deep learning framework (CUDA-enabled)
+torch==2.6.0+cu124
+torchvision==0.21.0+cu124
+torchaudio==2.6.0+cu124
+--extra-index-url https://download.pytorch.org/whl/cu124
+
+
+# HuggingFace ecosystem (models, tokenizers, acceleration)
+transformers==4.57.6
+accelerate==1.12.0
+bitsandbytes==0.49.1
+safetensors==0.7.0
+sentence-transformers==5.2.0
+huggingface-hub==0.36.0
+tokenizers==0.22.2
+
+
+# Computer vision & video processing
+opencv-python==4.9.0.80
+av==12.0.0
+pillow==10.4.0
+scenedetect==0.6.7.1
+yt-dlp==2024.12.23
+
+
+# Scientific computing & data analysis
+numpy==1.26.4
+pandas==2.2.2
+scipy==1.12.0
+scikit-learn==1.5.2
+matplotlib==3.9.2
+seaborn==0.13.2
+
+
+# NLP evaluation metrics
+nltk==3.9.1
+rouge-score==0.1.2
+regex==2024.11.6
+
+
+# Utilities & system support
+tqdm==4.67.1
+pyyaml==6.0.2
+requests==2.32.3
+colorama==0.4.6
+psutil==5.9.8
+platformdirs==4.2.2
+joblib==1.4.2
+streamlit==1.53.1
+
+# Export / reporting utilities
+openpyxl==3.1.5
