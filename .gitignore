@@ -1,0 +1,32 @@
+# --- Python & Environment ---
+venv/
+env/
+.venv/
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+
+# --- OS / Editors ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- Runtime / Generated data  ---
+data/videos/*
+!data/videos/.gitkeep
+
+data/results/*
+!data/results/.gitkeep
+
+data/logs/*
+!data/logs/.gitkeep
+
+# Keep ground truth, especially the sample file you want tracked
+!data/ground_truth/
+!data/ground_truth/**
+
+# --- Evaluation outputs ---
+evaluation/reports/**/*
+!evaluation/reports/**/.gitkeep
