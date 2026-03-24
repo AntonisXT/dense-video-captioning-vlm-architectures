@@ -1,6 +1,6 @@
 <div align="center">
 
-# Dense Video Captioning
+# Deep Learning for Video Description
 
 ### Comparing BLIP, GIT-VATEX, and Qwen2-VL for segment-level video description under a unified inference pipeline
 
@@ -12,7 +12,7 @@
 [![ActivityNet](https://img.shields.io/badge/Benchmark-ActivityNet_Captions-orange?style=flat-square)](https://cs.stanford.edu/people/ranjaykrishna/densevid/)
 [![License](https://img.shields.io/badge/License-Academic-blue?style=flat-square)](#license)
 
-*Bachelor's Thesis · "Χρήση Βαθιάς Μάθησης για Περιγραφή Βίντεο"*  
+*Bachelor's Thesis · "Deep Learning for Video Description"*  
 *Department of Computer Science & Telecommunications, University of Thessaly*  
 *Author: Tsiakiris Antonios · Advisor: Konstantinos Kolomvatsos, Associate Professor · February 2026*
 
