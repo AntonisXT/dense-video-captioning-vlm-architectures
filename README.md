@@ -18,7 +18,7 @@
 
 <br>
 
-<img src="docs/assets/streamlit_home.png" alt="Dense Video Captioning: Streamlit Interface" width="850"/>
+<img src="docs/assets/demo_interface.gif" alt="Dense Video Captioning: Streamlit Interface" width="850"/>
 
 </div>
 
@@ -339,12 +339,6 @@ streamlit run app.py
 3. **Run the pipeline** — scene detection, frame extraction, and captioning execute automatically with a live progress bar
 4. **Review the caption timeline** — each detected segment is listed with its timestamps and generated caption
 5. **Export results** in your preferred format: JSON, CSV, SRT subtitle file, or subtitle-burned video
-
-<div align="center">
-<img src="docs/assets/streamlit_home.png" alt="Streamlit web interface home page" width="800"/>
-</div>
-
-<br>
 
 <div align="center">
 <img src="docs/assets/demo_interface.gif" alt="Streamlit interface demo" width="800"/>
