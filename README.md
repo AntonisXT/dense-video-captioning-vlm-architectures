@@ -332,24 +332,22 @@ Each video is then processed stage by stage: scene detection, frame extraction, 
 streamlit run app.py
 ```
 
-The web interface provides:
+**How to use the interface:**
 
-- Video upload or demo video selection
-- Model selection (BLIP / GIT-VATEX / Qwen2-VL)
-- Real-time processing progress visualization
-- Interactive timeline with generated captions
-- Export results in multiple formats
+1. **Upload a video** via the file uploader, or select one of the built-in demo clips
+2. **Select a captioning model** (BLIP for speed, GIT-VATEX for best lexical quality, Qwen2-VL for best semantic coverage)
+3. **Run the pipeline** — scene detection, frame extraction, and captioning execute automatically with a live progress bar
+4. **Review the caption timeline** — each detected segment is listed with its timestamps and generated caption
+5. **Export results** in your preferred format: JSON, CSV, SRT subtitle file, or subtitle-burned video
 
 <div align="center">
 <img src="docs/assets/streamlit_home.png" alt="Streamlit web interface home page" width="800"/>
 </div>
 
-A short demo of the interface in action:
+<br>
 
 <div align="center">
-  <video src="docs/assets/demo_interface.mp4" controls width="800">
-    <a href="docs/assets/demo_interface.mp4">▶ Watch demo video</a>
-  </video>
+<img src="docs/assets/demo_interface.gif" alt="Streamlit interface demo" width="800"/>
 </div>
 
 ---
@@ -417,31 +415,18 @@ A predicted segment is a **hit** if tIoU ≥ τ (default τ = 0.3). NLP scores a
 All evaluation modes are unified under `benchmark.py`, which validates inputs, prints a configuration summary, and dispatches to the appropriate module.
 
 ```bash
-# ── End-to-End: full pipeline on all 99 videos ──────────────────────────────
+# End-to-End: full pipeline (scene detection + captioning)
 python benchmark.py e2e --model blip
-python benchmark.py e2e --model git
-python benchmark.py e2e --model qwen
+python benchmark.py e2e --model git --limit 5        # quick sanity check
+python benchmark.py e2e --model qwen --threshold 0.5 # stricter IoU matching
 
-# Quick sanity check on 5 videos before a full run
-python benchmark.py e2e --model qwen --limit 5
+# Offline: re-score existing results without re-running inference
+python benchmark.py offline --model git
 
-# Replicate paper results with stricter IoU matching
-python benchmark.py e2e --model git --threshold 0.5
+# Oracle: caption quality with GT timestamps (upper bound)
+python benchmark.py oracle --model qwen
 
-# Use a custom ground-truth split
-python benchmark.py e2e --model blip --json data/ground_truth/val_2.json
-
-# ── Offline: re-score existing results without re-running inference ──────────
-python benchmark.py offline --model blip
-python benchmark.py offline --model git  --threshold 0.4
-python benchmark.py offline --model qwen --threshold 0.5
-
-# ── Oracle: evaluate caption quality with GT timestamps (upper bound) ────────
-python benchmark.py oracle --model blip
-python benchmark.py oracle --model git
-python benchmark.py oracle --model qwen --limit 10
-
-# ── Plots: regenerate all figures from existing JSON reports ─────────────────
+# Regenerate all figures from existing JSON reports
 python generate_plots.py
 ```
 
@@ -474,11 +459,7 @@ python generate_plots.py
 - All three models show significantly higher recall than precision, confirming **over-segmentation**, a property of the shared scene detector and not of any individual model. The precision/recall behavior is discussed in detail below.
 
 <div align="center">
-
-| End-to-End Model Comparison | Oracle Model Comparison |
-|:--:|:--:|
-| ![E2E Comparison](evaluation/reports/plots/comparisons/model_comparison_offline.png) | ![Oracle Comparison](evaluation/reports/plots/comparisons/model_comparison_oracle.png) |
-
+  <img src="evaluation/reports/plots/comparisons/model_comparison_offline.png" width="75%" alt="End-to-End Model Comparison"/>
 </div>
 
 ---
@@ -496,11 +477,7 @@ Oracle evaluation uses ground-truth segment boundaries, isolating caption qualit
 Under oracle conditions, **GIT-VATEX leads across all four metrics**, confirming that its advantage is primarily due to caption quality rather than temporal alignment. Qwen2-VL's relatively lower oracle scores despite strong METEOR in end-to-end evaluation suggest that some of its semantic gains come from loosely-matched segments rather than genuine caption precision.
 
 <div align="center">
-
-| BLIP Performance | GIT-VATEX Performance | Qwen2-VL Performance |
-|:--:|:--:|:--:|
-| ![BLIP Perf](evaluation/reports/plots/offline_blip_performance_summary.png) | ![GIT Perf](evaluation/reports/plots/offline_git_performance_summary.png) | ![Qwen Perf](evaluation/reports/plots/offline_qwen_performance_summary.png) |
-
+  <img src="evaluation/reports/plots/comparisons/model_comparison_oracle.png" width="75%" alt="Oracle Model Comparison"/>
 </div>
 
 ---
@@ -509,9 +486,7 @@ Under oracle conditions, **GIT-VATEX leads across all four metrics**, confirming
 
 <div align="center">
 
-| BLIP | GIT-VATEX | Qwen2-VL |
-|:--:|:--:|:--:|
-| ![BLIP Temporal](evaluation/reports/plots/offline_blip_temporal_localization.png) | ![GIT Temporal](evaluation/reports/plots/offline_git_temporal_localization.png) | ![Qwen Temporal](evaluation/reports/plots/offline_qwen_temporal_localization.png) |
+<img src="evaluation/reports/plots/comparisons/temporal_localization_comparison.png" alt="Temporal Localization Precision — All Models" width="820"/>
 
 </div>
 
@@ -539,27 +514,55 @@ The real takeaway is about **the system as a whole**: content-based scene detect
 
 ### Score Distributions
 
+**BLIP**
+
 <div align="center">
-
-| BLIP | GIT-VATEX | Qwen2-VL |
-|:--:|:--:|:--:|
-| ![BLIP Scores](evaluation/reports/plots/offline_blip_score_distribution.png) | ![GIT Scores](evaluation/reports/plots/offline_git_score_distribution.png) | ![Qwen Scores](evaluation/reports/plots/offline_qwen_score_distribution.png) |
-
+  <img src="evaluation/reports/plots/offline_blip_score_distribution.png" width="72%" alt="BLIP Score Distribution"/>
 </div>
+
+BLIP scores cluster tightly at the low end across all metrics, consistent with its single-frame, image-level approach. The distribution is narrow, reflecting the model's limited expressive range: object-centric captions systematically miss temporal or action-level content present in ActivityNet annotations.
+
+---
+
+**GIT-VATEX**
+
+<div align="center">
+  <img src="evaluation/reports/plots/offline_git_score_distribution.png" width="72%" alt="GIT-VATEX Score Distribution"/>
+</div>
+
+GIT-VATEX shows the best-spread distribution, with a higher proportion of non-zero BLEU and ROUGE-L scores compared to BLIP. The multi-frame temporal input provides enough context to generate action-grounded captions that overlap more consistently with ground-truth annotations.
+
+---
+
+**Qwen2-VL**
+
+<div align="center">
+  <img src="evaluation/reports/plots/offline_qwen_score_distribution.png" width="72%" alt="Qwen2-VL Score Distribution"/>
+</div>
+
+Qwen2-VL exhibits a bimodal-leaning METEOR distribution: a subset of segments score well (capturing semantic overlap despite paraphrase), while n-gram metrics (BLEU, ROUGE-L) show lower and more dispersed values. This reflects the model's verbosity — longer captions introduce more unmatched n-grams even when the core meaning is correct.
 
 ---
 
 ### Caption Length Comparison
 
+**End-to-End**
+
 <div align="center">
-
-| End-to-End | Oracle |
-|:--:|:--:|
-| ![Length E2E](evaluation/reports/plots/comparisons/caption_length_comparison_offline.png) | ![Length Oracle](evaluation/reports/plots/comparisons/caption_length_comparison_oracle.png) |
-
+  <img src="evaluation/reports/plots/comparisons/caption_length_comparison_offline.png" width="75%" alt="Caption Length Distribution — End-to-End"/>
 </div>
 
-Caption length distributions reveal a key stylistic difference: **Qwen2-VL generates significantly longer captions** compared to BLIP and GIT-VATEX, which better matches the verbosity of some ActivityNet annotations but introduces more n-gram mismatches in others. This partially explains why METEOR (a metric more tolerant of paraphrasing) favors Qwen2-VL while BLEU and ROUGE-L favor GIT-VATEX.
+In end-to-end evaluation, the length gap between models is most pronounced. **Qwen2-VL generates significantly longer captions** — typically 15–25 tokens — compared to BLIP and GIT-VATEX, which cluster around 8–12 tokens. This verbosity partially explains Qwen2-VL's higher METEOR score (more tokens provide more overlap opportunities for synonym-tolerant metrics) while simultaneously penalizing BLEU and ROUGE-L through inflated n-gram mismatches.
+
+---
+
+**Oracle**
+
+<div align="center">
+  <img src="evaluation/reports/plots/comparisons/caption_length_comparison_oracle.png" width="75%" alt="Caption Length Distribution — Oracle"/>
+</div>
+
+Under oracle conditions the length distributions narrow slightly for all models, as ground-truth boundaries guarantee that each caption is matched to a relevant segment. The relative ordering is preserved: GIT-VATEX and BLIP remain concise while Qwen2-VL stays verbose. The fact that GIT-VATEX's oracle scores improve most relative to its end-to-end scores confirms that its concise style is well-aligned with ActivityNet annotation conventions when temporal alignment is not a limiting factor.
 
 ---
 
