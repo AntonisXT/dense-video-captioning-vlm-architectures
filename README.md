@@ -197,13 +197,23 @@ where `S_centroid` is the cosine similarity of sentence-transformer embeddings b
 ```bash
 # Clone the repository
 git clone https://github.com/AntonisXT/dense-video-captioning-vlm-architectures.git
-cd Dense-Video-Captioning-Thesis
+cd dense-video-captioning-vlm-architectures
 
-# Create virtual environment
+# Create and activate virtual environment
 python -m venv venv
-source venv/bin/activate   # Linux/macOS
-# venv\Scripts\activate    # Windows
+```
 
+```bash
+# Linux / macOS
+source venv/bin/activate
+```
+
+```bash
+# Windows
+venv\Scripts\activate
+```
+
+```bash
 # Install dependencies
 pip install -r requirements.txt
 ```
@@ -235,7 +245,7 @@ python scripts/download_videos.py
 ## 📁 Project Structure
 
 ```
-Dense-Video-Captioning-Thesis/
+dense-video-captioning-vlm-architectures/
 ├── main.py                     # CLI entry point
 ├── app.py                      # Streamlit web interface
 ├── benchmark.py                # Benchmarking utilities
