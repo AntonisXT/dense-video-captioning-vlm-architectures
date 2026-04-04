@@ -196,7 +196,7 @@ where `S_centroid` is the cosine similarity of sentence-transformer embeddings b
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/Dense-Video-Captioning-Thesis.git
+git clone https://github.com/AntonisXT/dense-video-captioning-vlm-architectures.git
 cd Dense-Video-Captioning-Thesis
 
 # Create virtual environment
